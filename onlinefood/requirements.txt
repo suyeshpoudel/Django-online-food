@@ -1,5 +1,7 @@
 gunicorn==26.0.0
 packaging==26.2
-django
+django>=5.0,<5.1
 whitenoise
 Pillow
+python-decouple>=3.8
+psycopg2-binary>=2.9

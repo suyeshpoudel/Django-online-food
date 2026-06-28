@@ -8,7 +8,7 @@ import uuid
 class BaseModel(models.Model):
     uid = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
@@ -65,4 +65,4 @@ class OrderPlaced(BaseModel):
 
     @property
     def get_order_total(self):
-        return CartItems.objects.filter(cart = self).aggregate(total= Sum(models.F('quantity')*models.F('item__price')))['total']
+        return self.quantity * self.item.price

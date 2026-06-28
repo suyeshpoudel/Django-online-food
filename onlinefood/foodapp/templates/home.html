@@ -8,11 +8,14 @@
         {% for item in featured_items %}
             <div class="col-md-3">
                 <div class="card shadow-lg" style="width: 18rem">
-                    <img src="{{ item.image.url }}" style="height : 300px;" class="card-img-top">
+                    <img src="{% if item.image %}{{ item.image.url }}{% else %}https://via.placeholder.com/300{% endif %}" style="height : 300px;" class="card-img-top">
                     <div class="card-body">
                         <h5>{{ item.item_name }}</h5>
                         <p>Price = {{item.price}} | Category = {{item.category}}</p>
-                        <a href="{% url 'add_cart' item.uid %}" class="btn btn-success">Cart<i class="fa-solid fa-cart-shopping"></i></a>
+                        <form method="POST" action="{% url 'add_cart' item.uid %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Cart<i class="fa-solid fa-cart-shopping"></i></button>
+                        </form>
                         <a href="#" class="btn btn-primary">20% discount</a>
                     </div>
                 </div>

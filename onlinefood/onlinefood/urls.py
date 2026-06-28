@@ -15,28 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from foodapp.views import *
+
+handler404 = 'foodapp.views.custom_404'
+handler500 = 'foodapp.views.custom_500'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home'),
-    path('login/', login_page , name="login_page"),
-    path('register/', register , name="register"),
-    path('logout/', logout_page, name="logout_page"),
-    path('add-cart/<item_uid>', add_cart, name='add_cart'),
-    path('cart/',cart, name="cart"),
-    path('remove_cart_items/<cart_item_uid>', remove_cart_items, name="remove_cart_items"),
-    path('orders/', orders, name='orders'),
-    path('add-item/', add_item, name='add_item'),
-    path('all-items/', all_items, name='all_items'),
-     path('delete-recipe/<item_uid>/', delete_item, name="delete_item"),
-    path('update-recipe/<item_uid>/', update_item, name="update_item"),
-    path('success/', success, name="success"),
-    path('all-orders/', all_orders, name="all_orders"),
+    path('', include('foodapp.urls')),
 ]
 
 if settings.DEBUG:

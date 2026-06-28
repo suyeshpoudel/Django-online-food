@@ -8,23 +8,57 @@
         {% for item in items %}
             <div class="col-md-3">
                 <div class="card shadow-lg" style="width: 18rem">
-                    <img src="{{ item.image.url }}" style="height : 300px;" class="card-img-top">
+                    <img src="{% if item.image %}{{ item.image.url }}{% else %}https://via.placeholder.com/300{% endif %}" style="height : 300px;" class="card-img-top">
                     <div class="card-body">
                         <h5>{{ item.item_name }}</h5>
                         <p>Price = {{item.price}} | Category = {{item.category}}</p>
-                        <a href="{% url 'add_cart' item.uid %}" class="btn btn-success">Cart<i class="fa-solid fa-cart-shopping"></i></a>
+                        <form method="POST" action="{% url 'add_cart' item.uid %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Cart<i class="fa-solid fa-cart-shopping"></i></button>
+                        </form>
                         <a href="#" class="btn btn-primary">20% discount</a>
                         {% if request.user.is_superuser %}
-                        <a href = "/delete-recipe/{{item.uid}}" class = "btn btn-danger m-2">Delete</a>
+                        <form method="POST" action="{% url 'delete_item' item.uid %}" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger m-2">Delete</button>
+                        </form>
                         <a href = "/update-recipe/{{item.uid}}" class = "btn btn-success">Update</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
+        {% empty %}
+            <p class="text-center">No items found.</p>
         {% endfor %}
     </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo; First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Last &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 </div>
 
-
-       
 {% endblock %}
